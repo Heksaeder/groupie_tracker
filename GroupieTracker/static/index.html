@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="C:\Users\celin\OneDrive\Documents\Ynov\Golang\GroupieTracker\static\style.css">
+    <title>Groupie Tracker</title>
+</head>
+
+<body>
+    <header>
+        <h1>GroupieTracker</h1>
+        <nav class="top-bar">
+            <ul class="nav-bar">
+                <li><a href="">Artists</a></li>
+                <li><a href="">Locations</a></li>
+                <li><a href="">Dates</a></li>
+                <li><a href="">Relation</a></li>
+
+            </ul>
+        </nav>
+    </header>
+    <div class="bar-search">
+        <form action="#">
+            <input type="text" placeholder="Rechercher...">
+            <button type="submit">Go</button>
+        </form>
+    </div>
+    <button id="alphabetical-sort-button">Trier en ordre alphabétique</button>
+    <div class="place">
+        <div class="card">
+            <div class="imgBx">
+                <img src="{{.Image}}" alt="">
+            </div>
+            <div class="content">
+                <div class="details">
+                    <h2>{{.Name}}</h2>
+                    <div class="data">
+                        <h3><span>Date de création : {{.CreationDate}}</span></h3>
+                        <h3><span>Année du premier album : {{.FirstAlbum}}</span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+          <div class="imgBx">
+              <img src="{{.Image}}" alt="">
+          </div>
+          <div class="content">
+              <div class="details">
+                  <h2>{{.Name}}</h2>
+                  <div class="data">
+                      <h3><span>Date de création : {{.CreationDate}}</span></h3>
+                      <h3><span>Année du premier album : {{.FirstAlbum}}</span></h3>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+</body>
+
+</html>
