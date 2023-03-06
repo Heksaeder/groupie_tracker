@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="static/style.css">
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
     <title>Groupie Tracker</title>
 </head>
 <body>
@@ -24,11 +24,33 @@
     </form>
 </div>
 <table>
-    <tbody>
-        {{range .}}
+    <tbody><tr>Details :</tr>
+        {{range .Groupes}}
         <tr>
             <td>{{.Name}}</td>
-            <td>{{.Member}}</td>
+            <td><img src="{{.Image}}" alt="" style="width:200px; height:200px; border-radius:50%"></td>
+            <td>{{.CreationDate}}</td>
+            <td>{{.FirstAlbum}}</td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+<table>
+    <tbody><tr>Membres :</tr>
+        {{range .Membres}}
+        <tr>
+            <td>{{.Name}}</td>
+        </tr>
+        {{end}}
+    </tbody>
+</table>
+<table>
+    <tbody><tr>Concerts :</tr>
+        {{range .Concerts}}
+        <tr>
+            <td>{{.Location}}</td>
+            <td>{{.Date}}</td>
+            <td>{{.Location}}</td>
         </tr>
         {{end}}
     </tbody>
