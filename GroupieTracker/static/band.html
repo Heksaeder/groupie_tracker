@@ -24,21 +24,11 @@
     </form>
 </div>
 <table>
-    <thead>
-        <tr>
-            <th>Artiste</th>
-            <th>Pays</th>
-            <th>Ville/Etat</th>
-            <th>Date</th>
-        </tr>
-    </thead>
     <tbody>
         {{range .}}
         <tr>
-            <td>{{.Artist}}</td>
-            <td>{{.Country}}</td>
-            <td>{{.Location}}</td>
-            <td>{{.Date}}</td>
+            <td>{{.Name}}</td>
+            <td>{{.Member}}</td>
         </tr>
         {{end}}
     </tbody>

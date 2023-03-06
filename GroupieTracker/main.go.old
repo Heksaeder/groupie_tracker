@@ -1,0 +1,135 @@
+
+
+package main
+
+import (
+	"database/sql"
+	"fmt"
+	"html/template"
+	"net/http"
+
+	//"net/http"
+
+	_ "github.com/go-sql-driver/mysql"
+)
+
+type Groupe struct {
+	ID           int    `json:"id"`
+	Name         string `json:"name"`
+	Image        string `json:"image"`
+	CreationDate int    `json:"creationDate"`
+	FirstAlbum   string `json:"firstAlbum"`
+}
+
+type Membre struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+type Pays struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func main() {
+	// Open up our database connection.
+	db, err := sql.Open("mysql", "root@tcp(127.0.0.1)/groupes")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// Defer the close till after the main function has finished
+	defer db.Close()
+
+	// Récupérer tous les groupes de la base de données.
+	groupes, err := getBands(db)
+	// membres, err := getMembers(db)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		tmpl, err := template.ParseFiles("static/concerts.html")
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Exécutez le template et incluez les données de tous les groupes.
+		err = tmpl.Execute(w, groupes)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	})
+
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	fmt.Println("Serveur démarré sur http://localhost:8080")
+	erro := http.ListenAndServe(":8080", nil)
+	if erro != nil {
+		fmt.Println(erro)
+	}
+}
+
+// Récupère tous les groupes de la base de données.
+func getBands(db *sql.DB) ([]Groupe, error) {
+	// Requête pour récupérer tous les groupes de la base de données.
+	query := "SELECT g.id, g.name, g.image, g.creationDate, g.firstAlbum FROM groupes g"
+
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	groupes := []Groupe{}
+	for rows.Next() {
+		var groupe Groupe
+
+		err = rows.Scan(&groupe.ID, &groupe.Name, &groupe.Image, &groupe.CreationDate, &groupe.FirstAlbum)
+		if err != nil {
+			return nil, err
+		}
+
+		groupes = append(groupes, groupe)
+	}
+
+	// Vérifiez s'il y a des erreurs après avoir lu toutes les lignes.
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
+	return groupes, nil
+}
+
+func getMembers(db *sql.DB) ([]Membre, error) {
+	// Requête pour récupérer tous les groupes de la base de données.
+	query_two := "SELECT m.name FROM membres m WHERE m.id IN (SELECT id_membres FROM groupes_membres g WHERE name = 'Queen')"
+
+	rows, err := db.Query(query_two)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	membres := []Membre{}
+	for rows.Next() {
+		var membre Membre
+
+		err = rows.Scan(&membre.Name)
+		if err != nil {
+			return nil, err
+		}
+
+		membres = append(membres, membre)
+	}
+
+	// Vérifiez s'il y a des erreurs après avoir lu toutes les lignes.
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+
+	return membres, nil
+}

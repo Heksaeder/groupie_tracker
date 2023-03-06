@@ -13,15 +13,16 @@
         <nav class="top-bar">
             <ul class="nav-bar">
                 <li><a href="index.html">Artists</a></li>
-                <li><a href="concerts.html">Concerts</a></li>
+                <li><a href="/concerts">Concerts</a></li>
             </ul>
         </nav>
     </header>
     <div class="bar-search">
-    <form action="#">
-        <input type="text" placeholder="Rechercher...">
-        <button type="submit">Go</button>
-    </form>
+        <form method="POST" action="/band">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name">
+            <button type="submit">Go</button>
+        </form>
 </div>
     <div class="place">
         {{range .}}
@@ -31,7 +32,7 @@
         </div>
         <div class="content">            
             <div class="details">
-                <h2>{{.Name}}</h2>
+                <a href="/band"><h2>{{.Name}}</h2></a>
                 <div class="data">
                     <h3>Date de création <br> {{.CreationDate}}</h3>
                     <h3>Premier album <br> {{.FirstAlbum}}</h3>

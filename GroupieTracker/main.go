@@ -3,78 +3,260 @@
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
+	"log"
+	"net/http"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type Groupe struct {
-	ID           int    `json:"id"`
-	Name         string `json:"name"`
-	Image        string `json:"image"`
-	CreationDate int    `json:"creationDate"`
-	FirstAlbum   string `json:"firstAlbum"`
-}
-
-type Membre struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
+	ID           int
+	Name         string
+	Image        string
+	CreationDate string
+	FirstAlbum   string
+	Member       string
 }
 
 type Concert struct {
-	ID     int
-	IDLieu int
-	IDDate int
-	Lieu   string
-	Date   string
-}
-
-type Pays struct {
-	ID   int
-	Name string
+	ID       int
+	Artist   string
+	Date     string
+	Country  string
+	Location string
 }
 
 func main() {
-	// Open up our database connection.
+	http.HandleFunc("/", homeHandler)
+	http.HandleFunc("/band", bandHandler)
+	http.HandleFunc("/concerts", concertHandler)
+	http.HandleFunc("/results", resultsHandler)
+
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	fmt.Println("http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	// Ouverture de la DB
 	db, err := sql.Open("mysql", "root@tcp(127.0.0.1)/groupes")
 	if err != nil {
-		panic(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
-
-	// Defer the close till after the main function has finished
 	defer db.Close()
 
-	// query := "SELECT g.name, g.image, g.creationDate, g.firstAlbum, m.name FROM membres m, groupes g WHERE m.id IN (SELECT id_membres FROM groupes_membres WHERE id_groupes =" + strconv.Itoa(id) + ") AND g.id IN (SELECT id_groupes FROM groupes_membres WHERE id_groupes =" + strconv.Itoa(id) + ")"
+	// Création de la requête et envoi à la DB
+	query := "SELECT g.id, g.name, g.image, g.creationDate, g.firstAlbum FROM groupes g"
 
-	// Récupère la liste des membres par groupe
-	// query_three := "SELECT m.name FROM membres m WHERE m.id IN (SELECT id_membres FROM groupes_membres gm WHERE gm.id_groupes = 1)"
-
-	// Récupère date et lieu d'un concert pour un id donné
-	// query_four := "SELECT l.name, d.date FROM lieux l, dates d WHERE l.id IN (SELECT id_lieu FROM concerts c WHERE id_concert = 17) AND d.id IN (SELECT id_date FROM concerts c WHERE id_concert = 17)"
-
-	// Récupère lieu, pays, date, groupe selon id concert
-	query_five := "SELECT l.name, p.name, d.date, g.name FROM lieux l, pays p, dates d, groupes g WHERE l.id IN (SELECT id_lieu FROM concerts c WHERE id_concert = 17) AND p.id IN (SELECT id_pays FROM lieux l WHERE l.id IN (SELECT id_lieu FROM concerts WHERE id_concert = 17)) AND d.id IN (SELECT id_date FROM concerts WHERE id_concert = 17) AND g.id IN (SELECT id_groupes FROM groupes_concerts WHERE id_concerts = 17)"
-
-	readTable, err := db.Query(query_five)
+	rows, err := db.Query(query)
 	if err != nil {
-		panic(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Création de la liste de data récupérées depuis la DB
+	var groupes []Groupe
+	for rows.Next() {
+		var groupe Groupe
+		err := rows.Scan(&groupe.ID, &groupe.Name, &groupe.Image, &groupe.CreationDate, &groupe.FirstAlbum)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		groupes = append(groupes, groupe)
+	}
+	err = rows.Err()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	for readTable.Next() {
-		var groupe Groupe
-		// var membre Membre
-		var concert Concert
-		var pays Pays
+	// Parsing de la page
+	tmpl, err := template.ParseFiles("static/index.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-		// for each row, scan the result into our groupe composite object
-		err = readTable.Scan(&concert.Lieu, &pays.Name, &concert.Date, &groupe.Name)
+	w.Header().Set("Content-Type", "text/html")
+
+	// Exécution du template avec les retrieved data de la DB
+	err = tmpl.Execute(w, groupes)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func concertHandler(w http.ResponseWriter, r *http.Request) {
+	// Ouverture de la DB
+	db, err := sql.Open("mysql", "root@tcp(127.0.0.1)/groupes")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	// Création de la requête et envoi à la DB
+	query := "SELECT l.name, p.name, d.date, g.name FROM `concerts` c JOIN `lieux` l ON c.id_lieu = l.id JOIN `pays` p ON l.id_pays = p.id JOIN `dates` d ON c.id_date = d.id JOIN `groupes_concerts` gc ON c.id_concert = gc.id_concerts JOIN `groupes` g ON gc.id_groupes = g.id WHERE 1 = 1"
+
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Création de la liste de data récupérées depuis la DB
+	var concerts []Concert
+	for rows.Next() {
+		var concert Concert
+		var dateStr string
+		err := rows.Scan(&concert.Location, &concert.Country, &dateStr, &concert.Artist)
 		if err != nil {
-			panic(err.Error()) // proper error handling instead of panic in your app
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
-		// Print out the band's name, the band's creation date, the band's first album and the member's names
-		fmt.Println(groupe.Name+" - "+concert.Lieu, concert.Date, pays.Name)
+		parsedDate, err := time.Parse("2006-01-02", dateStr)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		concert.Date = parsedDate.Format("2 Jan 2006")
+
+		concerts = append(concerts, concert)
+	}
+	err = rows.Err()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	// be careful deferring Queries if you are using transactions
-	defer readTable.Close()
+	// Parsing de la page
+	tmpl, err := template.ParseFiles("static/concerts.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+
+	// Exécution du template avec les retrieved data de la DB
+	err = tmpl.Execute(w, concerts)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func bandHandler(w http.ResponseWriter, r *http.Request) {
+	// Ouverture de la DB
+	db, err := sql.Open("mysql", "root@tcp(127.0.0.1)/groupes")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	name := r.FormValue("name")
+	log.Println(r.Form)
+
+	// Création de la requête et envoi à la DB
+	query := "SELECT g.name, m.name FROM membres m INNER JOIN groupes_membres gm ON gm.id_membres = m.id INNER JOIN groupes g ON g.id = gm.id_groupes WHERE g.name LIKE '%" + name + "%'"
+	// ADD A POST METHOD TO GET THE BAND NAME FROM LINK
+
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Création de la liste de data récupérées depuis la DB
+	var groupes []Groupe
+	for rows.Next() {
+		var groupe Groupe
+		err := rows.Scan(&groupe.Name, &groupe.Member)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		groupes = append(groupes, groupe)
+	}
+	err = rows.Err()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Parsing de la page
+	tmpl, err := template.ParseFiles("static/band.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Exécution du template avec les retrieved data de la DB
+	err = tmpl.Execute(w, groupes)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func resultsHandler(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root@tcp(127.0.0.1)/groupes")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer db.Close()
+
+	name := r.FormValue("name")
+	log.Println(r.Form)
+
+	query := "SELECT name, image, creationDate, firstAlbum FROM groupes WHERE name LIKE '%" + name + "%'"
+
+	rows, err := db.Query(query)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var groupes []Groupe
+	for rows.Next() {
+		var groupe Groupe
+		err := rows.Scan(&groupe.Name, &groupe.Image, &groupe.CreationDate, &groupe.FirstAlbum)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		groupes = append(groupes, groupe)
+	}
+	err = rows.Err()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	tmpl, err := template.ParseFiles("static/results.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html")
+
+	err = tmpl.Execute(w, groupes)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
