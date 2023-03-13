@@ -1,0 +1,55 @@
+﻿section#intro p span {
+  color:#b71515!important;
+}
+
+h1 span {
+  color:#b71515!important;
+}
+
+#navbar div:hover a {
+  color:#b71515!important;
+}
+
+.itembandResult p span {
+  color:#b71515!important;
+}
+
+.itemband:hover .name a {
+  color: #b71515!important;
+}
+
+div#endSearch, div#titleSearch {
+  color: #b71515!important;
+}
+
+div#filter-count {
+  color: #b71515!important;
+}
+
+#btn-top {
+  color: #b71515!important;
+}
+
+#descBand .briefInfo span {
+  color: #b71515!important;
+}
+
+#members {
+  color: #b71515!important;
+}
+
+.noResults {
+  color: #b71515!important;
+}
+
+form#formConcerts button {
+  color: #b71515;
+}
+
+button.active {
+  color:#aaa;
+}
+
+input[type="text"] {
+  color: #b71515!important;
+}

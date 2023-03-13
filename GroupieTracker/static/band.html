@@ -1,59 +1,72 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="../static/style.css">
+    <link id="yiajstyle" rel="stylesheet" type="text/css" href="../static/main_style.css">
+    <link rel="stylesheet" type="text/css" href="../static/minor_style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FitText.js/1.2.0/jquery.fittext.js"></script>
+    <script src="../static/search.js"></script>
+    <script src="../static/filter.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>Groupie Tracker</title>
 </head>
-<body>
-    <header>
-        <h1>GroupieTracker</h1>
-        <nav class="top-bar">
-            <ul class="nav-bar">
-                <li><a href="index.html">Artists</a></li>
-                <li><a href="concerts.html">Concerts</a></li>
-            </ul>
-        </nav>
-    </header>
-    <div class="bar-search">
-    <form action="#">
-        <input type="text" placeholder="Rechercher...">
-        <button type="submit">Go</button>
-    </form>
-</div>
-<table>
-    <tbody><tr>Details :</tr>
-        {{range .Groupes}}
-        <tr>
-            <td>{{.Name}}</td>
-            <td><img src="{{.Image}}" alt="" style="width:200px; height:200px; border-radius:50%"></td>
-            <td>{{.CreationDate}}</td>
-            <td>{{.FirstAlbum}}</td>
-        </tr>
+
+<body id="topPage">
+    <!-------------- NAVBAR ------------------>
+    <div id="navbar">
+        <div><a href="/">Home</a></div>
+        <div id="descMenu">Check la liste <br>de nos artistes !</div>
+        <div id="descMenu"></div>
+        <div><a href="/concerts">Concerts</a></div>
+        <div id="descMenu">Va voir la liste <br> des concerts !</div>
+        <button id="color-swap"><span id="groove">Groove</span></button>
+    </div>
+    <!-------------- FIN NAVBAR ------------------>
+    {{range .Groupes}}
+    <!-------------- FOOTER ------------------>
+    <section id="header">
+        <h1 id="bandPage"><span>{{.Name}}</span></h1>
+    </section>
+<!-------------- FIN HEADER ------------------>
+<!-------------- CADRE GROUPE ------------------>
+    <section id="info">
+        <section id="descBand">
+            <div class="zoom-effect">
+                <img src="{{.Image}}" alt="">
+            </div>
+            <p class="descBlock">{{.Description}}</p>
+            {{end}}
+            <section id="members">
+                <div id="titleSearch">Members</div>
+                {{range .Membres}}
+                <p class="memberName">{{.Name}}</p>
+                {{end}}
+            </section>
+            {{range .Groupes}}
+            <div class="briefInfo">Formed in <span>{{.CreationDate}}</span> • First released album
+                <span>{{.FirstAlbum}}</span></div>
+        </section> 
         {{end}}
-    </tbody>
-</table>
-<table>
-    <tbody><tr>Membres :</tr>
-        {{range .Membres}}
-        <tr>
-            <td>{{.Name}}</td>
-        </tr>
-        {{end}}
-    </tbody>
-</table>
-<table>
-    <tbody><tr>Concerts :</tr>
+        
+    </section>
+   <!-------------- FIN CADRE GROUPE ------------------>
+
+<!-------------- CADRE CONCERTS ------------------>
+    <section id="info2">
+        <div id="titleSearch">Concerts</div>
+    
+    <section id="concerts">
         {{range .Concerts}}
-        <tr>
-            <td>{{.Location}}</td>
-            <td>{{.Date}}</td>
-            <td>{{.Location}}</td>
-        </tr>
+        <div class="concertDetail"><div id="dateConcert">{{.Date}}</div><div id="placeConcert"><strong>{{.Location}}</strong>, {{.Country}}</div></div>
         {{end}}
-    </tbody>
-</table>
+    </section>
+    </section>
+    <!-------------- FIN CADRE CONCERTS ------------------>
 </body>
+
 </html>

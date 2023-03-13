@@ -20,6 +20,7 @@ type Groupe struct {
 	ID           int
 	Name         string
 	Image        string
+	Description  string
 	CreationDate string
 	FirstAlbum   string
 }
@@ -52,7 +53,7 @@ func main() {
 	r.PathPrefix(staticDir).Handler(http.StripPrefix(staticDir, fs))
 
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-	fmt.Println("http://localhost:8080")
+	fmt.Println("Server running ; head to http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
 
@@ -154,6 +155,8 @@ func concertHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", "text/html")
+
 	// Parsing de la page
 	tmpl, err := template.ParseFiles("static/concerts.html")
 	if err != nil {
@@ -161,8 +164,7 @@ func concertHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/html")
-	w.Header().Add("Content-Type", "text/css")
+	//w.Header().Add("Content-Type", "text/css")
 
 	// Exécution du template avec les retrieved data de la DB
 	err = tmpl.Execute(w, concerts)
@@ -216,7 +218,7 @@ func bandHandler(w http.ResponseWriter, r *http.Request) {
 
 	// GROUPES
 	// Création de la requête et envoi à la DB
-	query_groupes := "SELECT g.name, g.image, g.firstAlbum, g.creationDate FROM groupes g WHERE g.name LIKE '%" + name + "%'"
+	query_groupes := "SELECT g.name, g.image, g.description, g.firstAlbum, g.creationDate FROM groupes g WHERE g.name LIKE '%" + name + "%'"
 
 	rows3, err := db.Query(query_groupes)
 	if err != nil {
@@ -230,7 +232,7 @@ func bandHandler(w http.ResponseWriter, r *http.Request) {
 	for rows3.Next() {
 		var groupe Groupe
 		var dateStr string
-		err := rows3.Scan(&groupe.Name, &groupe.Image, &dateStr, &groupe.CreationDate)
+		err := rows3.Scan(&groupe.Name, &groupe.Image, &groupe.Description, &dateStr, &groupe.CreationDate)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -304,13 +306,7 @@ func bandHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "text/html")
 
-	err = tmpl.Execute(w, results)
-	// Exécution du template avec les retrieved data de la DB
-	/* err = tmpl.Execute(w, groupes)*/
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+	tmpl.Execute(w, results)
 }
 
 func resultsHandler(w http.ResponseWriter, r *http.Request) {

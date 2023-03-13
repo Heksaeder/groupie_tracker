@@ -1,0 +1,205 @@
+/*************************************** TITRE SECONDAIRE ***************************************/
+h1#bandPage {
+    font-size: 2em;
+    transform: translateY(50%);
+}
+
+section#header {
+    height: auto;
+}
+
+
+/*************************************** INFO GROUPE ***************************************/
+/* Style la fiche du groupe (cadres, polices, couleurs) */
+
+#info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+#descBand {
+    width: 100vw;
+    padding: 10vh 0;
+    flex-wrap: wrap;
+    display: flex;
+    background-color: #111;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+#descBand p.descBlock {
+    width: 40%;
+    padding-left: 50px;
+    font-size: 20px;
+    text-align: justify;
+    color: #aaa;
+    font-family: 'Spectral', sans-serif;
+}
+
+#descBand:hover .zoom-effect img {
+    transform: scale(1.8);
+}
+
+#descBand .briefInfo {
+    text-align: center;
+    color: #333;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 40px;
+    flex-basis: 100%;
+}
+
+#descBand .briefInfo span {
+    color: #ae8f2a;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+/* Liste des membres */
+#members #titleSearch {
+    position:absolute;
+    transform:scale(0.5) translateY(-150%) rotate(6deg);
+    text-transform: capitalize;
+    font-weight: normal;
+    font-family: 'Spectral',serif;
+    letter-spacing: -3px;
+    font-style: italic;
+    color:#aaa;
+}
+
+#members {
+    margin: 2vh;
+    padding: 2vh;
+    width: 250px;
+    background-color: #222;
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bold;
+    transform: rotate(-3deg);
+    color: #ae8f2a;
+    text-align: center;
+}
+
+#members p.memberName:nth-child(even) {
+    color: #aaa;
+}
+
+/*************************************** LISTE CONCERTS ***************************************/
+/* Gère l'affichage des concerts de la page /concerts */
+
+#info2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#info2 div#titleSearch {
+    flex-basis: 100%;
+    margin:2vh 0;
+    transform:rotate(6deg);
+}
+
+/* Tableau des concerts */
+#concerts {
+    color: #aaa;
+    flex-basis: 100%;
+    background-color: #11111100;
+    min-height: 55vh;
+}
+
+#concerts div.concertDetail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    background-color: #111;
+    font-family: 'Oswald', sans-serif;
+    font-size: 18px;
+    text-transform: uppercase;
+    column-gap: 100px;
+}
+
+#concerts div#dateConcert, #concerts div#nameConcert {
+    text-align: center;
+}
+
+#concerts div#dateConcert, #concerts div#placeConcert, #concerts div#nameConcert {
+    width:20vw;
+}
+
+#concerts div.concertDetail:nth-child(even) {
+    background-color: #222;
+}
+
+/* Affiche un message en cas d'absence de résultats */
+.noResults {
+    display:none;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Oswald', sans-serif;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 5em;
+    line-height: 100px;
+    letter-spacing: 2px;
+    text-align: center;
+    rotate: -3deg;
+    color: #ae8f2a;
+}
+
+/*************************************** FILTRE DE RECHERCHE ***************************************/
+/* Gère l'input utilisateur, le titre et les filtres */
+
+form#formConcerts {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+form#formConcerts input[type="text"] {
+    flex-basis: 100%;
+}
+
+form#formConcerts button {
+    flex-basis: calc(100%/3);
+    height:8vh;
+    text-align: center;
+    background-color:#222;
+    font-family: 'Oswald', sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    float:right;
+    color:#ae8f2a;
+    border: none;
+}
+
+form#formConcerts button:first-of-type {
+    border-radius:0 0 0 25px;
+}
+
+form#formConcerts button:last-of-type {
+    border-radius: 0 0 25px 0;
+}
+
+button.active {
+    color:#aaa!important;
+    border: none;
+    background-image: linear-gradient(to bottom, #111, #222);
+}
+
+input#filterConcerts {
+    border-radius: 25px 25px 0 0;
+  }
+
+.concert-search {
+    margin-bottom:5vh;
+}
