@@ -54,7 +54,7 @@ section#header {
 }
 
 #descBand .briefInfo span {
-    color: #ae8f2a;
+    color:var(--main-font);
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
     font-weight: bold;
@@ -83,7 +83,7 @@ section#header {
     text-transform: uppercase;
     font-weight: bold;
     transform: rotate(-3deg);
-    color: #ae8f2a;
+    color:var(--main-font);
     text-align: center;
 }
 
@@ -125,15 +125,19 @@ section#header {
     font-family: 'Oswald', sans-serif;
     font-size: 18px;
     text-transform: uppercase;
-    column-gap: 100px;
 }
 
-#concerts div#dateConcert, #concerts div#nameConcert {
+#concerts div#nameConcert {
+    text-align:right;
+}
+
+#concerts div#dateConcert {
     text-align: center;
 }
 
 #concerts div#dateConcert, #concerts div#placeConcert, #concerts div#nameConcert {
     width:20vw;
+    min-width: 200px;
 }
 
 #concerts div.concertDetail:nth-child(even) {
@@ -153,7 +157,7 @@ section#header {
     letter-spacing: 2px;
     text-align: center;
     rotate: -3deg;
-    color: #ae8f2a;
+    color:var(--main-font);
 }
 
 /*************************************** FILTRE DE RECHERCHE ***************************************/
@@ -167,10 +171,12 @@ form#formConcerts {
 
 form#formConcerts input[type="text"] {
     flex-basis: 100%;
+    min-width: 500px;
 }
 
 form#formConcerts button {
     flex-basis: calc(100%/3);
+    min-width:calc(500px/3);
     height:8vh;
     text-align: center;
     background-color:#222;
@@ -178,7 +184,7 @@ form#formConcerts button {
     font-size: 30px;
     font-weight: bold;
     float:right;
-    color:#ae8f2a;
+    color:var(--main-font);
     border: none;
 }
 

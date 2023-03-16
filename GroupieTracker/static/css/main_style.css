@@ -21,6 +21,53 @@ a {
   color: #ddd;
 }
 
+.default-theme {
+  --main-font:#ae8f2a;
+}
+
+.red {
+  --main-font: #c70000;
+}
+
+.yellow {
+  --main-font: #ae8f2a;
+}
+
+.toggle-switch {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#label-switch {
+  transition: color 1s;
+  font-family: 'Oswald', sans-serif;
+  font-weight: bold;
+  text-transform:uppercase;
+  font-size: 2em;
+  color: #aaa;
+  line-height: 50px;
+}
+
+input[type="checkbox"] {
+  position: absolute; 
+  overflow: hidden; 
+  clip: rect(0 0 0 0); 
+  height: 1px; 
+  width: 1px; 
+  margin: -1px; 
+  padding: 0; 
+  border: 0;
+}
+
+@media (max-width: 95%) {
+  h1,h1 span {
+    font-size: 2em;
+  }
+}
+
+
 /*************************************** SCROLLBAR ***************************************/
 /* Réduit la scrollbar à 0 */
 html::-webkit-scrollbar {
@@ -66,7 +113,7 @@ h1 span {
   letter-spacing: 2px;
   text-align: center;
   rotate: -3deg;
-  color: #ae8f2a;
+  color: var(--main-font);
   text-shadow: #111 0px 0px 10px;
 }
 
@@ -111,7 +158,7 @@ section#intro p {
 section#intro p span {
   font-family: 'Spectral', serif;
   font-style: italic;
-  color:#ae8f2a
+  color:var(--main-font);
 }
 
 
@@ -135,7 +182,7 @@ section#intro p span {
 
 #navbar:hover {
   width: 20vh;
-  transition:1s ease-out;
+  transition:.5s ease-out;
 }
 
 #navbar:hover div {
@@ -146,7 +193,7 @@ section#intro p span {
   text-align: center;
   width: 100%;
   background-color: rgba(13, 13, 13);
-  transition: 1s;
+  transition: 0.5s ease-out;
   rotate: -90deg;
 }
 
@@ -156,7 +203,7 @@ section#intro p span {
 }
 
 #navbar div:hover a {
-  color: #ae8f2a;
+  color:var(--main-font);
   transition: 1s;
 }
 
@@ -249,7 +296,7 @@ button#color-swap:hover #groove {
 
 .itembandResult p span {
   font-family: 'Spectral', sans-serif;
-  color:#ae8f2a;
+  color:var(--main-font);
   font-style: italic;
 }
 
@@ -292,7 +339,7 @@ button#color-swap:hover #groove {
 }
 
 .itemband:hover .name a {
-  color: #ae8f2a !important;
+  color:var(--main-font)!important;
 }
 
 .itemband .photo {
@@ -338,7 +385,7 @@ div#endSearch, div#titleSearch {
   letter-spacing: 2px;
   text-align: center;
   rotate: -3deg;
-  color: #ae8f2a;
+  color:var(--main-font);
 }
 
 div#endSearch {
@@ -385,7 +432,7 @@ input[type="text"] {
   height: 100%;
   padding: 0 20px;
   font-size: 16px;
-  color: #ae8f2a;
+  color:var(--main-font);
   border: none;
   border-radius: 25px;
 }
@@ -404,7 +451,7 @@ div#filter-count {
   font-weight: bold;
   transform: rotate(3deg) translateY(11vh);
   float:right;
-  color:#ae8f2a;
+  color:var(--main-font);
 }
 
 /*************************************** IMAGES DES GROUPES ***************************************/
@@ -446,7 +493,7 @@ div#filter-count {
 #btn-top {
   margin:auto;
   background-color: #111;
-  color:#ae8f2a;
+  color:var(--main-font);
   font-family: 'Oswald', sans-serif;
   font-weight: bold;
   font-size: 50px;

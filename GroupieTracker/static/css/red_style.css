@@ -1,4 +1,12 @@
-﻿section#intro p span {
+﻿.toggle-switch p {
+  color:#b71515!important;
+}
+
+p {
+  color:#b71515!important;
+}
+
+section#intro p span {
   color:#b71515!important;
 }
 

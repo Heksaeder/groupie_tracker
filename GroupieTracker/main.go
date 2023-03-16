@@ -164,7 +164,7 @@ func concertHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//w.Header().Add("Content-Type", "text/css")
+	// w.Header().Add("Content-Type", "text/css")
 
 	// Exécution du template avec les retrieved data de la DB
 	err = tmpl.Execute(w, concerts)
